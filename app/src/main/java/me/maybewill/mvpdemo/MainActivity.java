@@ -10,7 +10,7 @@ import android.widget.Toast;
 import me.maybewill.mvpdemo.Interface.MainInterface;
 import me.maybewill.mvpdemo.Presenter.MainPresenter;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainInterface {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText edittext_password;
     private EditText edittext_username;
@@ -30,31 +30,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         edittext_username = (EditText) findViewById(R.id.edittext_username);
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
-        mainPresenter = new MainPresenter(this);
+        mainPresenter = new MainPresenter(mainInterface);
     }
+
+
+    private MainInterface mainInterface = new MainInterface() {
+        @Override
+        public void LoginSuccess() {
+            Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void LoginFailed(String message) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button:
-                LoginEvent();
+                Login();
                 break;
         }
     }
 
-    private void LoginEvent() {
+    private void Login() {
         String password = edittext_password.getText().toString();
         String username = edittext_username.getText().toString();
         mainPresenter.login(username, password);
     }
 
-    @Override
-    public void LoginSuccess() {
-        Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void LoginFailed(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 }
